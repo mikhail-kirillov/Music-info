@@ -43,7 +43,7 @@ definitions:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.Song'
+          $ref: '#/definitions/models.SongResponse'
         type: array
       limit:
         example: 10
@@ -58,14 +58,8 @@ definitions:
         example: 5
         type: integer
     type: object
-  models.Song:
+  models.SongResponse:
     properties:
-      created_at:
-        example: "2025-03-19T00:00:00Z"
-        type: string
-      deleted_at:
-        example: "null"
-        type: string
       group:
         example: The Beatles
         type: string
@@ -83,9 +77,6 @@ definitions:
         type: string
       text:
         example: Hey Jude, don't make it bad...
-        type: string
-      updated_at:
-        example: "2025-03-19T00:00:00Z"
         type: string
     type: object
   models.UpdateSongRequest:
@@ -121,35 +112,35 @@ info:
 paths:
   /songs:
     get:
-      description: Возвращает список песен с фильтрацией и пагинацией.
+      description: Returns a list of songs with filtering and pagination
       parameters:
-      - description: Название группы
+      - description: Group name
         in: query
         name: group
         type: string
-      - description: Название песни
+      - description: Song Title
         in: query
         name: song
         type: string
-      - description: Дата релиза
+      - description: Release date
         in: query
         name: release_date
         type: string
-      - description: Текст песни
+      - description: Song lyrics
         in: query
         name: text
         type: string
-      - description: Ссылка на песню
+      - description: Link to the song
         in: query
         name: link
         type: string
       - default: 1
-        description: Номер страницы
+        description: Page number
         in: query
         name: page
         type: integer
       - default: 10
-        description: Количество элементов на странице
+        description: Number of elements per page
         in: query
         name: limit
         type: integer
@@ -168,16 +159,15 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Получить список песен
+      summary: Get song list
       tags:
       - songs
     post:
       consumes:
       - application/json
-      description: Добавляет песню на основе предоставленных данных о группе и названии
-        песни.
+      description: Adds a song based on the provided band and song title information
       parameters:
-      - description: Данные новой песни
+      - description: New song details
         in: body
         name: input
         required: true
@@ -189,7 +179,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Song'
+            $ref: '#/definitions/models.SongResponse'
         "400":
           description: Bad Request
           schema:
@@ -198,14 +188,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Добавить песню
+      summary: Add song
       tags:
       - songs
   /songs/{id}:
     delete:
-      description: Удаляет песню из базы данных по ее идентификатору.
+      description: Removes a song from the database by its ID
       parameters:
-      - description: ID песни
+      - description: Song ID
         in: path
         name: id
         required: true
@@ -227,20 +217,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Удалить песню
+      summary: Delete song
       tags:
       - songs
     put:
       consumes:
       - application/json
-      description: Обновляет название, группу, дату релиза, текст или ссылку на песню.
+      description: Updates the title, band, release date, lyrics or link to the song
       parameters:
-      - description: ID песни
+      - description: Song ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Обновленные данные песни
+      - description: Updated song data
         in: body
         name: input
         required: true
@@ -252,7 +242,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Song'
+            $ref: '#/definitions/models.SongResponse'
         "400":
           description: Bad Request
           schema:
@@ -265,25 +255,25 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Обновить песню
+      summary: Update song
       tags:
       - songs
   /songs/{id}/lyrics:
     get:
-      description: Возвращает текст песни построчно с пагинацией.
+      description: Returns the lyrics line by line with pagination
       parameters:
-      - description: ID песни
+      - description: Song ID
         in: path
         name: id
         required: true
         type: integer
       - default: 1
-        description: Номер страницы
+        description: Verse number
         in: query
         name: page
         type: integer
       - default: 10
-        description: Количество строк на странице
+        description: Limit number
         in: query
         name: limit
         type: integer
@@ -302,7 +292,7 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Получить текст песни
+      summary: Get song lyrics
       tags:
       - songs
 swagger: "2.0"

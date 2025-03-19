@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/mikhail-kirillov/Music-info/config"
 	"github.com/mikhail-kirillov/Music-info/models"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestFetchSongDetails_Success(t *testing.T) {
-	expectedSong := &models.Song{
+	expectedSong := &models.SongResponse{
 		ID:    1,
 		Song:  "Test Song",
 		Group: "Test Group",
@@ -24,11 +23,8 @@ func TestFetchSongDetails_Success(t *testing.T) {
 		assert.Equal(t, "Test Group", r.URL.Query().Get("group"))
 		assert.Equal(t, "Test Song", r.URL.Query().Get("song"))
 
-		var testSong models.Song = models.Song{
+		var testSong models.SongResponse = models.SongResponse{
 			ID:          1,
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
-			DeletedAt:   time.Now(),
 			Group:       "Test Group",
 			Song:        "Test Song",
 			ReleaseDate: "Test Date",

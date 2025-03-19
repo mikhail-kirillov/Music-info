@@ -26,56 +26,56 @@ const docTemplate = `{
     "paths": {
         "/songs": {
             "get": {
-                "description": "Возвращает список песен с фильтрацией и пагинацией.",
+                "description": "Returns a list of songs with filtering and pagination",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "songs"
                 ],
-                "summary": "Получить список песен",
+                "summary": "Get song list",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Название группы",
+                        "description": "Group name",
                         "name": "group",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Название песни",
+                        "description": "Song Title",
                         "name": "song",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Дата релиза",
+                        "description": "Release date",
                         "name": "release_date",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Текст песни",
+                        "description": "Song lyrics",
                         "name": "text",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Ссылка на песню",
+                        "description": "Link to the song",
                         "name": "link",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 1,
-                        "description": "Номер страницы",
+                        "description": "Page number",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 10,
-                        "description": "Количество элементов на странице",
+                        "description": "Number of elements per page",
                         "name": "limit",
                         "in": "query"
                     }
@@ -102,7 +102,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Добавляет песню на основе предоставленных данных о группе и названии песни.",
+                "description": "Adds a song based on the provided band and song title information",
                 "consumes": [
                     "application/json"
                 ],
@@ -112,10 +112,10 @@ const docTemplate = `{
                 "tags": [
                     "songs"
                 ],
-                "summary": "Добавить песню",
+                "summary": "Add song",
                 "parameters": [
                     {
-                        "description": "Данные новой песни",
+                        "description": "New song details",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -128,7 +128,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Song"
+                            "$ref": "#/definitions/models.SongResponse"
                         }
                     },
                     "400": {
@@ -148,7 +148,7 @@ const docTemplate = `{
         },
         "/songs/{id}": {
             "put": {
-                "description": "Обновляет название, группу, дату релиза, текст или ссылку на песню.",
+                "description": "Updates the title, band, release date, lyrics or link to the song",
                 "consumes": [
                     "application/json"
                 ],
@@ -158,17 +158,17 @@ const docTemplate = `{
                 "tags": [
                     "songs"
                 ],
-                "summary": "Обновить песню",
+                "summary": "Update song",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID песни",
+                        "description": "Song ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Обновленные данные песни",
+                        "description": "Updated song data",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -181,7 +181,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Song"
+                            "$ref": "#/definitions/models.SongResponse"
                         }
                     },
                     "400": {
@@ -205,15 +205,15 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Удаляет песню из базы данных по ее идентификатору.",
+                "description": "Removes a song from the database by its ID",
                 "tags": [
                     "songs"
                 ],
-                "summary": "Удалить песню",
+                "summary": "Delete song",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID песни",
+                        "description": "Song ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -249,18 +249,18 @@ const docTemplate = `{
         },
         "/songs/{id}/lyrics": {
             "get": {
-                "description": "Возвращает текст песни построчно с пагинацией.",
+                "description": "Returns the lyrics line by line with pagination",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "songs"
                 ],
-                "summary": "Получить текст песни",
+                "summary": "Get song lyrics",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID песни",
+                        "description": "Song ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -268,14 +268,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "default": 1,
-                        "description": "Номер страницы",
+                        "description": "Verse number",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 10,
-                        "description": "Количество строк на странице",
+                        "description": "Limit number",
                         "name": "limit",
                         "in": "query"
                     }
@@ -368,7 +368,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Song"
+                        "$ref": "#/definitions/models.SongResponse"
                     }
                 },
                 "limit": {
@@ -389,17 +389,9 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Song": {
+        "models.SongResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2025-03-19T00:00:00Z"
-                },
-                "deleted_at": {
-                    "type": "string",
-                    "example": "null"
-                },
                 "group": {
                     "type": "string",
                     "example": "The Beatles"
@@ -423,10 +415,6 @@ const docTemplate = `{
                 "text": {
                     "type": "string",
                     "example": "Hey Jude, don't make it bad..."
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2025-03-19T00:00:00Z"
                 }
             }
         },

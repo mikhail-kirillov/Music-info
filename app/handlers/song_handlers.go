@@ -3,83 +3,83 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/mikhail-kirillov/Music-info/config"
-	"github.com/mikhail-kirillov/Music-info/database"
 	"github.com/mikhail-kirillov/Music-info/services"
+	"gorm.io/gorm"
 )
 
-// @Summary		Получить список песен
-// @Description	Возвращает список песен с фильтрацией и пагинацией.
+// @Summary		Get song list
+// @Description	Returns a list of songs with filtering and pagination
 // @Tags			songs
 // @Produce		json
-// @Param			group			query		string	false	"Название группы"
-// @Param			song			query		string	false	"Название песни"
-// @Param			release_date	query		string	false	"Дата релиза"
-// @Param			text			query		string	false	"Текст песни"
-// @Param			link			query		string	false	"Ссылка на песню"
-// @Param			page			query		int		false	"Номер страницы"					default(1)
-// @Param			limit			query		int		false	"Количество элементов на странице"	default(10)
+// @Param			group			query		string	false	"Group name"
+// @Param			song			query		string	false	"Song Title"
+// @Param			release_date	query		string	false	"Release date"
+// @Param			text			query		string	false	"Song lyrics"
+// @Param			link			query		string	false	"Link to the song"
+// @Param			page			query		int		false	"Page number"					default(1)
+// @Param			limit			query		int		false	"Number of elements per page"	default(10)
 // @Success		200				{object}	models.GetSongsResponse
 // @Failure		400				{object}	models.ErrorResponse
 // @Failure		500				{object}	models.ErrorResponse
 // @Router			/songs [get]
-func GetSongs(c *gin.Context, db database.Database) {
+func GetSongs(c *gin.Context, db *gorm.DB) {
 	services.GetSongs(c, db)
 }
 
-// @Summary		Получить текст песни
-// @Description	Возвращает текст песни построчно с пагинацией.
+// @Summary		Get song lyrics
+// @Description	Returns the lyrics line by line with pagination
 // @Tags			songs
 // @Produce		json
-// @Param			id		path		int	true	"ID песни"
-// @Param			page	query		int	false	"Номер страницы"				default(1)
-// @Param			limit	query		int	false	"Количество строк на странице"	default(10)
+// @Param			id		path		int	true	"Song ID"
+// @Param			page	query		int	false	"Verse number"	default(1)
+// @Param			limit	query		int	false	"Limit number"	default(10)
 // @Success		200		{object}	models.GetSongLyricsResponse
 // @Failure		400		{object}	models.ErrorResponse
 // @Failure		404		{object}	models.ErrorResponse
 // @Router			/songs/{id}/lyrics [get]
-func GetSongLyrics(c *gin.Context, db database.Database) {
+func GetSongLyrics(c *gin.Context, db *gorm.DB) {
 	services.GetSongLyrics(c, db)
 }
 
-// @Summary		Добавить песню
-// @Description	Добавляет песню на основе предоставленных данных о группе и названии песни.
+// @Summary		Add song
+// @Description	Adds a song based on the provided band and song title information
 // @Tags			songs
 // @Accept			json
 // @Produce		json
-// @Param			input	body		models.AddSongRequest	true	"Данные новой песни"
-// @Success		201		{object}	models.Song
+// @Param			input	body		models.AddSongRequest	true	"New song details"
+// @Success		201		{object}	models.SongResponse
 // @Failure		400		{object}	models.ErrorResponse
 // @Failure		500		{object}	models.ErrorResponse
 // @Router			/songs [post]
-func AddSong(c *gin.Context, cfg *config.Config, db database.Database) {
+func AddSong(c *gin.Context, cfg *config.Config, db *gorm.DB) {
 	services.AddSong(c, cfg, db)
 }
 
-// @Summary		Обновить песню
-// @Description	Обновляет название, группу, дату релиза, текст или ссылку на песню.
+// @Summary		Update song
+// @Description	Updates the title, band, release date, lyrics or link to the song
 // @Tags			songs
 // @Accept			json
 // @Produce		json
-// @Param			id		path		int							true	"ID песни"
-// @Param			input	body		models.UpdateSongRequest	true	"Обновленные данные песни"
-// @Success		200		{object}	models.Song
+// @Param			id		path		int							true	"Song ID"
+// @Param			input	body		models.UpdateSongRequest	true	"Updated song data"
+// @Success		200		{object}	models.SongResponse
 // @Failure		400		{object}	models.ErrorResponse
 // @Failure		404		{object}	models.ErrorResponse
 // @Failure		500		{object}	models.ErrorResponse
 // @Router			/songs/{id} [put]
-func UpdateSong(c *gin.Context, db database.Database) {
+func UpdateSong(c *gin.Context, db *gorm.DB) {
 	services.UpdateSong(c, db)
 }
 
-// @Summary		Удалить песню
-// @Description	Удаляет песню из базы данных по ее идентификатору.
+// @Summary		Delete song
+// @Description	Removes a song from the database by its ID
 // @Tags			songs
-// @Param			id	path		int	true	"ID песни"
+// @Param			id	path		int	true	"Song ID"
 // @Success		200	{object}	models.DeleteSongResponse
 // @Failure		400	{object}	models.ErrorResponse
 // @Failure		404	{object}	models.ErrorResponse
 // @Failure		500	{object}	models.ErrorResponse
 // @Router			/songs/{id} [delete]
-func DeleteSong(c *gin.Context, db database.Database) {
+func DeleteSong(c *gin.Context, db *gorm.DB) {
 	services.DeleteSong(c, db)
 }

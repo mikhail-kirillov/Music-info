@@ -24,23 +24,37 @@ import (
 
 func main() {
 	const funcName string = "main"
+
 	config.InitLogger()
-	slog.Debug("logger initialization completed", slog.String("function_name", funcName))
+	slog.Debug("logger initialization completed",
+		slog.String("function_name", funcName))
+
 	cfg := config.LoadConfig()
-	slog.Debug("configuration loaded", slog.String("function_name", funcName))
+	slog.Debug("configuration loaded",
+		slog.String("function_name", funcName))
+
 	db, err := database.ConnectDatabase(cfg)
 	if err != nil {
-		slog.Error("database connection error", slog.String("function_name", funcName))
+		slog.Error("database connection error",
+			slog.String("function_name", funcName))
 		log.Fatal("connection to database error:", err)
 	}
-	slog.Debug("database is connected", slog.String("function_name", funcName))
+	slog.Debug("database is connected",
+		slog.String("function_name", funcName))
+
 	router := routes.SetupRouter(cfg, db)
-	slog.Debug("router has been configured", slog.String("function_name", funcName))
+	slog.Debug("router has been configured",
+		slog.String("function_name", funcName))
+
 	address := fmt.Sprintf("0.0.0.0:%s", cfg.ServerPort)
-	slog.Info("server started", slog.String("function_name", funcName))
+	slog.Info("server started",
+		slog.String("function_name", funcName))
 	err = router.Run(address)
 	if err != nil {
-		slog.Error("run error", slog.String("function_name", funcName), slog.String("error", err.Error()))
+		slog.Error("run error",
+			slog.String("function_name", funcName),
+			slog.String("error", err.Error()))
 	}
-	slog.Info("server stopped", slog.String("function_name", funcName))
+	slog.Info("server stopped",
+		slog.String("function_name", funcName))
 }

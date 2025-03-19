@@ -12,7 +12,7 @@ import (
 	"github.com/mikhail-kirillov/Music-info/models"
 )
 
-func fetchSongDetails(group, song string, cfg *config.Config) (*models.Song, error) {
+func fetchSongDetails(group, song string, cfg *config.Config) (*models.SongResponse, error) {
 	const funcName string = "fetchSongDetails"
 
 	url := fmt.Sprintf("%s/info?group=%s&song=%s",
@@ -37,7 +37,7 @@ func fetchSongDetails(group, song string, cfg *config.Config) (*models.Song, err
 		return nil, errors.New("request to API")
 	}
 
-	var songDetail models.Song
+	var songDetail models.SongResponse
 	if err := json.NewDecoder(resp.Body).Decode(&songDetail); err != nil {
 		slog.Error("decode error",
 			slog.String("function_name", funcName),

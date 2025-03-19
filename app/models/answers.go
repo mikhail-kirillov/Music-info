@@ -2,11 +2,11 @@ package models
 
 // swagger:model
 type GetSongsResponse struct {
-	Data       []Song `json:"data"`
-	Page       int    `json:"page" example:"1"`
-	Limit      int    `json:"limit" example:"10"`
-	TotalPages int    `json:"totalPages" example:"5"`
-	TotalItems int64  `json:"totalItems" example:"50"`
+	Data       []SongResponse `json:"data"`
+	Page       int            `json:"page" example:"1"`
+	Limit      int            `json:"limit" example:"10"`
+	TotalPages int            `json:"totalPages" example:"5"`
+	TotalItems int64          `json:"totalItems" example:"50"`
 }
 
 // swagger:model
