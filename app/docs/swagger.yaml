@@ -1,0 +1,308 @@
+definitions:
+  models.AddSongRequest:
+    properties:
+      group:
+        example: The Beatles
+        type: string
+      song:
+        example: Hey Jude
+        type: string
+    required:
+    - group
+    - song
+    type: object
+  models.DeleteSongResponse:
+    properties:
+      message:
+        example: Song deleted
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        example: Invalid request
+        type: string
+    type: object
+  models.GetSongLyricsResponse:
+    properties:
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      totalVerses:
+        example: 50
+        type: integer
+      verses:
+        items:
+          type: string
+        type: array
+    type: object
+  models.GetSongsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Song'
+        type: array
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      totalItems:
+        example: 50
+        type: integer
+      totalPages:
+        example: 5
+        type: integer
+    type: object
+  models.Song:
+    properties:
+      created_at:
+        example: "2025-03-19T00:00:00Z"
+        type: string
+      deleted_at:
+        example: "null"
+        type: string
+      group:
+        example: The Beatles
+        type: string
+      id:
+        example: 1
+        type: integer
+      link:
+        example: https://example.com/heyjude
+        type: string
+      release_date:
+        example: "1968-08-26"
+        type: string
+      song:
+        example: Hey Jude
+        type: string
+      text:
+        example: Hey Jude, don't make it bad...
+        type: string
+      updated_at:
+        example: "2025-03-19T00:00:00Z"
+        type: string
+    type: object
+  models.UpdateSongRequest:
+    properties:
+      group:
+        example: The Beatles
+        type: string
+      link:
+        example: https://example.com/heyjude
+        type: string
+      release_date:
+        example: "1968-08-26"
+        type: string
+      song:
+        example: Hey Jude
+        type: string
+      text:
+        example: Hey Jude, don't make it bad...
+        type: string
+    type: object
+info:
+  contact:
+    email: kirillov.mikhail.job@icloud.com
+    name: Kirillov Mikhail
+    url: https://mikhail-kirillov.github.io/
+  description: Online music library
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Music info
+  version: 0.0.1
+paths:
+  /songs:
+    get:
+      description: Возвращает список песен с фильтрацией и пагинацией.
+      parameters:
+      - description: Название группы
+        in: query
+        name: group
+        type: string
+      - description: Название песни
+        in: query
+        name: song
+        type: string
+      - description: Дата релиза
+        in: query
+        name: release_date
+        type: string
+      - description: Текст песни
+        in: query
+        name: text
+        type: string
+      - description: Ссылка на песню
+        in: query
+        name: link
+        type: string
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Количество элементов на странице
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSongsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Получить список песен
+      tags:
+      - songs
+    post:
+      consumes:
+      - application/json
+      description: Добавляет песню на основе предоставленных данных о группе и названии
+        песни.
+      parameters:
+      - description: Данные новой песни
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddSongRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Добавить песню
+      tags:
+      - songs
+  /songs/{id}:
+    delete:
+      description: Удаляет песню из базы данных по ее идентификатору.
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DeleteSongResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Удалить песню
+      tags:
+      - songs
+    put:
+      consumes:
+      - application/json
+      description: Обновляет название, группу, дату релиза, текст или ссылку на песню.
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновленные данные песни
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSongRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Обновить песню
+      tags:
+      - songs
+  /songs/{id}/lyrics:
+    get:
+      description: Возвращает текст песни построчно с пагинацией.
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Количество строк на странице
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSongLyricsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Получить текст песни
+      tags:
+      - songs
+swagger: "2.0"

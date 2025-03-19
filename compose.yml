@@ -1,0 +1,31 @@
+services:
+
+  app:
+    build: .
+    container_name: app
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - project_network
+
+  db:
+    image: postgres
+    container_name: db
+    networks:
+      - project_network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  project_network:
+    driver: bridge
