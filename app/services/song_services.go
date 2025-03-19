@@ -18,6 +18,7 @@ import (
 func GetSongs(c *gin.Context, db *gorm.DB) {
 	const funcName = "GetSongs"
 
+	// Проверка всех условий
 	query := db.Model(&models.SongTable{})
 	if group := c.Query("group"); group != "" {
 		query = query.Where("\"group\" LIKE ?", "%"+group+"%")
@@ -45,6 +46,7 @@ func GetSongs(c *gin.Context, db *gorm.DB) {
 			slog.String("function_name", funcName))
 	}
 
+	// Получение страницы
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil || page < 1 {
 		slog.Error("invalid page format",
@@ -55,6 +57,7 @@ func GetSongs(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
+	// Получение лимита
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	if err != nil || limit < 1 {
 		slog.Error("invalid limit format",
@@ -69,6 +72,7 @@ func GetSongs(c *gin.Context, db *gorm.DB) {
 		slog.String("function_name", funcName),
 		slog.Int("offset", offset))
 
+	// Получение общего количества
 	var total int64
 	query.Count(&total)
 	var songs []models.SongResponse
@@ -104,10 +108,12 @@ func GetSongLyrics(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
+	// Проверка существования
 	var song models.SongTable
 	if err := db.First(&song, songID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, models.ErrorResponse{Error: "Song not found"})
+			c.JSON(http.StatusNotFound,
+				models.ErrorResponse{Error: "Song not found"})
 		} else {
 			slog.Error("failed to retrieve song",
 				slog.String("function_name", funcName),
@@ -188,6 +194,7 @@ func AddSong(c *gin.Context, cfg *config.Config, db *gorm.DB) {
 		return
 	}
 
+	// Получение ответа от внешнего сервера
 	songDetails, err := fetchSongDetails(input.Group, input.Song, cfg)
 	if err != nil {
 		slog.Error("failed to fetch song details",
@@ -221,6 +228,7 @@ func AddSong(c *gin.Context, cfg *config.Config, db *gorm.DB) {
 		return
 	}
 
+	// Замена на ID в БД
 	(*songDetails).ID = songToInsert.ID
 	c.JSON(http.StatusCreated, songDetails)
 	slog.Debug("new song added",
@@ -244,7 +252,8 @@ func UpdateSong(c *gin.Context, db *gorm.DB) {
 	var song models.SongTable
 	if err := db.First(&song, songID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, models.ErrorResponse{Error: "Song not found"})
+			c.JSON(http.StatusNotFound,
+				models.ErrorResponse{Error: "Song not found"})
 		} else {
 			slog.Error("failed to retrieve song",
 				slog.String("function_name", funcName),
@@ -312,7 +321,8 @@ func DeleteSong(c *gin.Context, db *gorm.DB) {
 			slog.String("function_name", funcName),
 			slog.Int("id", songID),
 			slog.String("error", err.Error()))
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid ID"})
+		c.JSON(http.StatusBadRequest,
+			models.ErrorResponse{Error: "Invalid ID"})
 		return
 	}
 
@@ -325,7 +335,8 @@ func DeleteSong(c *gin.Context, db *gorm.DB) {
 				slog.String("error", err.Error()),
 				slog.Int("song_id", songID),
 			)
-			c.JSON(http.StatusNotFound, models.ErrorResponse{Error: "Song not found"})
+			c.JSON(http.StatusNotFound,
+				models.ErrorResponse{Error: "Song not found"})
 		default:
 			slog.Error("failed to retrieve song",
 				slog.String("function_name", funcName),
@@ -342,11 +353,13 @@ func DeleteSong(c *gin.Context, db *gorm.DB) {
 		slog.Error("failed to delete song",
 			slog.String("function_name", funcName),
 			slog.String("error", err.Error()))
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to delete song"})
+		c.JSON(http.StatusInternalServerError,
+			models.ErrorResponse{Error: "Failed to delete song"})
 		return
 	}
 
-	c.JSON(http.StatusOK, models.DeleteSongResponse{Message: "Song deleted"})
+	c.JSON(http.StatusOK,
+		models.DeleteSongResponse{Message: "Song deleted"})
 	slog.Debug("song deleted",
 		slog.String("function_name", funcName),
 		slog.Int("id", songID))

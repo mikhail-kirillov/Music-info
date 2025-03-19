@@ -26,7 +26,8 @@ func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	slog.Info("database connected", slog.String("function_name", funcName))
+	slog.Info("database connected",
+		slog.String("function_name", funcName))
 
 	err = db.AutoMigrate(&models.SongTable{})
 	if err != nil {
@@ -35,7 +36,8 @@ func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 			slog.String("error", err.Error()))
 	}
 
-	slog.Info("database migrated", slog.String("function_name", funcName))
+	slog.Info("database migrated",
+		slog.String("function_name", funcName))
 
 	return db, nil
 }

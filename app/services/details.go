@@ -15,6 +15,7 @@ import (
 func fetchSongDetails(group, song string, cfg *config.Config) (*models.SongResponse, error) {
 	const funcName string = "fetchSongDetails"
 
+	// Запрос к внешнему music info
 	url := fmt.Sprintf("%s/info?group=%s&song=%s",
 		cfg.MusicApiURL,
 		url.QueryEscape(group),
@@ -28,8 +29,10 @@ func fetchSongDetails(group, song string, cfg *config.Config) (*models.SongRespo
 		return nil, err
 	}
 	defer resp.Body.Close()
-	slog.Debug("request was received", slog.String("function_name", funcName))
+	slog.Debug("request was received",
+		slog.String("function_name", funcName))
 
+	// Проверка ответа
 	if resp.StatusCode != http.StatusOK {
 		slog.Error("get request status error",
 			slog.String("function_name", funcName),
@@ -37,6 +40,7 @@ func fetchSongDetails(group, song string, cfg *config.Config) (*models.SongRespo
 		return nil, errors.New("request to API")
 	}
 
+	// Декодирование и возврат
 	var songDetail models.SongResponse
 	if err := json.NewDecoder(resp.Body).Decode(&songDetail); err != nil {
 		slog.Error("decode error",

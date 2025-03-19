@@ -36,7 +36,8 @@ func SetupRouter(cfg *config.Config, db *gorm.DB) *gin.Engine {
 	router.DELETE("/songs/:id", func(ctx *gin.Context) {
 		handlers.DeleteSong(ctx, db)
 	})
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swagFiles.Handler))
+	router.GET("/swagger/*any",
+		ginSwagger.WrapHandler(swagFiles.Handler))
 
 	slog.Debug("router has been configured",
 		slog.String("function_name", funcName))
