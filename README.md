@@ -61,11 +61,12 @@ To retrieve complete song details, the server interacts with an external API usi
    Create a `.env` file in the root directory and specify the required configuration parameters. Example content:  
 
    ```env
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=your_db_name
+    POSTGRES_USER=your_db_user
+    POSTGRES_PASSWORD=your_db_password
+    POSTGRES_PORT=your_db_port
+    POSTGRES_DB=your_db_name
+    SERVER_PORT=your_server_port
+    MUSIC_API_URL=your_url
    ```
 
 4. **Run the application using `make`:**  
