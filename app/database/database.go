@@ -13,7 +13,8 @@ import (
 func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 	const funcName string = "ConnectDatabase"
 
-	url := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
+	url := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		cfg.DBPort,
 		cfg.DBHost,
 		cfg.DBUser,
 		cfg.DBPassword,
