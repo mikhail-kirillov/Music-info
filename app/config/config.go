@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	DBHost      string
+	DBPort      string
 	DBUser      string
 	DBName      string
 	DBPassword  string
@@ -22,6 +23,7 @@ func LoadConfig() *Config {
 	slog.Debug("returned config", slog.String("function_name", funcName))
 	return &Config{
 		DBHost:      viper.GetString("DB_HOST"),
+		DBPort:      viper.GetString("POSTGRES_PORT"),
 		DBUser:      viper.GetString("POSTGRES_USER"),
 		DBName:      viper.GetString("POSTGRES_DB"),
 		DBPassword:  viper.GetString("POSTGRES_PASSWORD"),
